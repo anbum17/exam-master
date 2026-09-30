@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Exam Master — Government Exam Prep</title>
+<style>
+:root{--blue:#2457d6;--navy:#142447;--bg:#f4f7fc;--muted:#667085;--green:#15966b}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui,Arial,sans-serif;background:var(--bg);color:#172033}
+header{background:linear-gradient(125deg,#173b9a,#3978ef);color:white;padding:22px max(18px,calc((100% - 960px)/2));}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{font-size:21px;font-weight:800;letter-spacing:.2px}.tag{font-size:12px;opacity:.85}
+main{max-width:960px;margin:22px auto;padding:0 16px 40px}.hero{background:white;border-radius:20px;padding:22px;box-shadow:0 8px 28px #16356b10;margin-bottom:18px}.hero h1{margin:0 0 8px;font-size:clamp(23px,5vw,32px)}p{line-height:1.5}.muted{color:var(--muted)}.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.stat{background:#eef3ff;padding:10px 14px;border-radius:12px;font-size:13px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:13px}.card{background:white;border:1px solid #e5eaf3;border-radius:16px;padding:17px;text-align:left;cursor:pointer;transition:.15s}.card:hover{transform:translateY(-2px);border-color:#9db6f5;box-shadow:0 8px 20px #1d3d8012}.emoji{font-size:27px}.card h3{margin:9px 0 5px}.card p{margin:0;color:var(--muted);font-size:13px}.btn{border:0;border-radius:11px;padding:12px 17px;font-weight:700;cursor:pointer;background:var(--blue);color:white}.btn.secondary{background:#edf2ff;color:#2349ae}.btn:disabled{opacity:.45;cursor:not-allowed}.row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.panel{background:white;border:1px solid #e5eaf3;border-radius:18px;padding:20px}.hidden{display:none!important}.progress{height:8px;background:#e9eef8;border-radius:10px;overflow:hidden;margin:15px 0}.progress span{display:block;height:100%;background:var(--blue);width:0}.option{display:block;width:100%;text-align:left;background:white;border:1px solid #dce3ef;padding:13px;border-radius:12px;margin:9px 0;cursor:pointer;color:#172033}.option.selected{border:2px solid var(--blue);background:#f0f4ff}.option.correct{border-color:var(--green);background:#eaf8f2}.option.wrong{border-color:#d64545;background:#fff0f0}.pill{background:#eef3ff;color:#244bb0;padding:6px 10px;border-radius:30px;font-size:12px;font-weight:700}.answer{padding:12px;border-radius:12px;background:#f3f6fb;margin-top:12px}.score{font-size:48px;font-weight:850;color:var(--blue)}footer{text-align:center;color:var(--muted);font-size:12px;padding:18px}
+@media(max-width:520px){header{padding:17px}.hero{padding:18px}.panel{padding:16px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><div class="brand">🎯 Exam Master</div><div class="tag">Your daily government exam practice</div></div><div class="tag">MVP · V1.0</div></div></header>
+<main>
+<section id="home">
+ <div class="hero"><div class="pill">LEARN · PRACTICE · IMPROVE</div><h1>Prepare smarter for your next exam.</h1><p class="muted">Choose a subject and take a 10-question practice test. Get your score and explanations instantly.</p><div class="stats"><div class="stat">📚 4 subjects</div><div class="stat">✍️ 10 questions per test</div><div class="stat">⏱️ 10-minute timer</div></div></div>
+ <div class="row" style="margin:18px 2px"><h2>Choose a subject</h2><span class="muted" id="bestScore">Best score: 0/10</span></div>
+ <div class="grid" id="subjects"></div>
+</section>
+<section id="quiz" class="hidden">
+ <div class="row" style="margin-bottom:14px"><button class="btn secondary" onclick="goHome()">← Subjects</button><span class="pill" id="subjectLabel"></span><span class="pill" id="timer">10:00</span></div>
+ <div class="panel"><div class="row"><b id="qCount">Question 1 of 10</b><span class="muted" id="answered">0 answered</span></div><div class="progress"><span id="bar"></span></div><h2 id="question"></h2><div id="options"></div><div class="row" style="margin-top:18px"><button class="btn secondary" id="prev" onclick="move(-1)">Previous</button><button class="btn" id="next" onclick="move(1)">Next</button></div><div class="muted" style="font-size:12px;margin-top:14px">You can change your answers before submitting.</div><button class="btn" style="width:100%;margin-top:14px;background:#16845f" onclick="submitQuiz()">Submit test</button></div>
+</section>
+<section id="result" class="hidden">
+ <div class="panel" style="text-align:center"><div class="pill">TEST COMPLETED</div><h1>Your result</h1><div class="score" id="score">0/10</div><p class="muted" id="summary"></p><div class="stats" style="justify-content:center"><div class="stat" id="correctStat">Correct: 0</div><div class="stat" id="wrongStat">Incorrect: 0</div><div class="stat" id="percentStat">Accuracy: 0%</div></div><div class="row" style="justify-content:center;margin-top:18px"><button class="btn secondary" onclick="goHome()">Choose subject</button><button class="btn" onclick="retry()">Try again</button></div></div>
+ <h2 style="margin-top:24px">Answer review</h2><div id="review"></div>
+</section>
+</main><footer>Exam Master · Practice questions for learning. Verify official exam syllabi and notifications.</footer>
+<script>
+const bank={
+"General Knowledge":[
+["Which is the largest state in India by area?",["Madhya Pradesh","Rajasthan","Maharashtra","Uttar Pradesh"],1,"Rajasthan is the largest Indian state by geographical area."],
+["Who is known as the chief architect of the Indian Constitution?",["Mahatma Gandhi","B. R. Ambedkar","Jawaharlal Nehru","Sardar Patel"],1,"Dr. B. R. Ambedkar chaired the Drafting Committee."],
+["What is the national animal of India?",["Lion","Elephant","Bengal tiger","Leopard"],2,"The Bengal tiger is India's national animal."],
+["Which planet is called the Red Planet?",["Venus","Mars","Jupiter","Mercury"],1,"Iron minerals on Mars' surface give it a reddish appearance."],
+["The capital of Tamil Nadu is:",["Madurai","Coimbatore","Chennai","Tiruchirappalli"],2,"Chennai is the capital of Tamil Nadu."],
+["Who wrote India's national anthem?",["Bankim Chandra Chatterjee","Rabindranath Tagore","Sarojini Naidu","Subramania Bharati"],1,"Rabindranath Tagore wrote Jana Gana Mana."],
+["Which is the currency of Japan?",["Won","Yuan","Yen","Ringgit"],2,"Japan's currency is the yen."],
+["The headquarters of ISRO is located in:",["Hyderabad","Bengaluru","New Delhi","Chennai"],1,"ISRO headquarters is in Bengaluru, Karnataka."],
+["How many spokes are there in the Ashoka Chakra?",["20","22","24","26"],2,"The Ashoka Chakra has 24 spokes."],
+["Which gas do plants mainly absorb during photosynthesis?",["Oxygen","Nitrogen","Carbon dioxide","Hydrogen"],2,"Plants use carbon dioxide and water to produce sugars using light."]
+],
+"Mathematics":[
+["What is 25% of 240?",["40","50","60","80"],2,"25% is one-fourth; 240 ÷ 4 = 60."],
+["Simplify: 18 × 5 ÷ 3",["20","25","30","35"],2,"Multiplication and division are evaluated left to right: 90 ÷ 3 = 30."],
+["A train travels 120 km in 2 hours. What is its speed?",["40 km/h","50 km/h","60 km/h","80 km/h"],2,"Speed = distance ÷ time = 120 ÷ 2 = 60 km/h."],
+["What is the square of 17?",["279","289","299","309"],1,"17 × 17 = 289."],
+["The average of 10, 20 and 30 is:",["15","20","25","30"],1,"Average = (10 + 20 + 30) ÷ 3 = 20."],
+["If x + 7 = 19, x equals:",["10","11","12","13"],2,"Subtract 7 from both sides: x = 12."],
+["A shirt costs ₹800. A 10% discount is:",["₹40","₹60","₹80","₹100"],2,"10% of ₹800 = ₹80."],
+["What is the LCM of 4 and 6?",["8","10","12","24"],2,"12 is the smallest number divisible by both 4 and 6."],
+["A ratio is 2:3 and the total is 25. The first part is:",["5","10","12","15"],1,"Total parts = 5; each part = 25 ÷ 5 = 5; first part = 10."],
+["What is 3/4 expressed as a percentage?",["25%","50%","75%","80%"],2,"3 ÷ 4 × 100 = 75%."]
+],
+"Reasoning":[
+["Find the next number: 2, 4, 8, 16, __",["18","24","30","32"],3,"Each number is multiplied by 2."],
+["Which one is different?",["Apple","Mango","Carrot","Banana"],2,"Carrot is commonly classified as a vegetable; the others are fruits."],
+["If CAT is coded as DBU, DOG is coded as:",["EPH","CNE","FQI","EOG"],0,"Each letter is moved one step forward: D→E, O→P, G→H."],
+["Find the missing number: 5, 10, 15, __, 25",["18","20","22","30"],1,"The sequence increases by 5."],
+["Book is to Reading as Fork is to:",["Writing","Eating","Drawing","Walking"],1,"A book is used for reading; a fork is used for eating."],
+["Which direction is opposite to North-East?",["South-East","North-West","South-West","West"],2,"The opposite direction of North-East is South-West."],
+["If today is Monday, what day will it be after 10 days?",["Wednesday","Thursday","Friday","Saturday"],1,"10 days later is 3 days after Monday: Thursday."],
+["Choose the odd pair:",["2–4","3–9","4–16","5–20"],3,"The first three are number and its square; 5 squared is 25, not 20."],
+["Arrange in dictionary order: Ball, Bat, Apple. Which comes first?",["Ball","Bat","Apple","Cannot say"],2,"Apple comes before words beginning with B."],
+["A is taller than B; B is taller than C. Who is shortest?",["A","B","C","Cannot determine"],2,"C is shorter than B, and B is shorter than A."]
+],
+"English":[
+["Choose the synonym of 'Brave'.",["Cowardly","Courageous","Weak","Lazy"],1,"Courageous means brave."],
+["Choose the antonym of 'Ancient'.",["Old","Historic","Modern","Former"],2,"Modern is the opposite of ancient."],
+["Fill in: She ___ to school every day.",["go","going","goes","gone"],2,"With 'she' in the simple present, use 'goes'."],
+["Choose the correctly spelled word.",["Definately","Definitely","Definetely","Definatly"],1,"The correct spelling is definitely."],
+["Plural of 'Child' is:",["Childs","Childes","Children","Childrens"],2,"Children is the irregular plural of child."],
+["Choose the correct article: He is ___ honest man.",["a","an","the","no article"],1,"Use 'an' before a vowel sound; honest begins with a silent h."],
+["Identify the verb: 'Birds fly in the sky.'",["Birds","Fly","Sky","The"],1,"Fly expresses the action."],
+["Choose the antonym of 'Expand'.",["Increase","Enlarge","Contract","Extend"],2,"Contract means to become smaller."],
+["Fill in: They have lived here ___ 2020.",["for","since","from","by"],1,"Use 'since' with a starting point in time."],
+["Choose the correct sentence.",["He don't like tea.","He doesn't likes tea.","He doesn't like tea.","He not like tea."],2,"After doesn't, use the base verb 'like'."]
+]};
+const icons={"General Knowledge":"🌍","Mathematics":"🔢","Reasoning":"🧠","English":"📖"};
+let subject="",questions=[],answers=[],index=0,seconds=600,interval=null,finished=false;
+const $=id=>document.getElementById(id);
+function init(){ $("subjects").innerHTML=Object.keys(bank).map(s=>`<button class="card" onclick="start('${s}')"><div class="emoji">${icons[s]}</div><h3>${s}</h3><p>10 practice questions · Explanations included</p><div style="margin-top:14px;color:#2457d6;font-weight:700;font-size:13px">Start practice →</div></button>`).join("");updateBest();}
+function updateBest(){let b=Number(localStorage.getItem("examMasterBest")||0);$("bestScore").textContent="Best score: "+b+"/10";}
+function show(id){["home","quiz","result"].forEach(x=>$(x).classList.toggle("hidden",x!==id));}
+function start(s){subject=s;questions=bank[s];answers=Array(questions.length).fill(null);index=0;seconds=600;finished=false;$("subjectLabel").textContent=s;show("quiz");render();clearInterval(interval);interval=setInterval(()=>{seconds--; $("timer").textContent=format(seconds);if(seconds<=0)submitQuiz();},1000);}
+function format(n){return Math.floor(n/60)+":"+String(n%60).padStart(2,"0")}
+function render(){let q=questions[index];$("qCount").textContent=`Question ${index+1} of ${questions.length}`;$("question").textContent=q[0];$("answered").textContent=answers.filter(x=>x!==null).length+" answered";$("bar").style.width=((index+1)/questions.length*100)+"%";$("options").innerHTML=q[1].map((o,i)=>`<button class="option ${answers[index]===i?"selected":""}" onclick="choose(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("");$("prev").disabled=index===0;$("next").textContent=index===questions.length-1?"Review last question":"Next";}
+function choose(i){answers[index]=i;render();}
+function move(d){index=Math.max(0,Math.min(questions.length-1,index+d));render();}
+function submitQuiz(){if(finished)return;finished=true;clearInterval(interval);let correct=answers.reduce((n,a,i)=>n+(a===questions[i][2]?1:0),0);let wrong=questions.length-correct;let best=Number(localStorage.getItem("examMasterBest")||0);if(correct>best)localStorage.setItem("examMasterBest",correct);$("score").textContent=correct+"/"+questions.length;$("summary").textContent=correct>=8?"Great practice! Keep revising.":correct>=5?"Good effort. Review the explanations below.":"Keep practising. Learn from each explanation."; $("correctStat").textContent="Correct: "+correct;$("wrongStat").textContent="Incorrect / skipped: "+wrong;$("percentStat").textContent="Accuracy: "+Math.round(correct/questions.length*100)+"%";$("review").innerHTML=questions.map((q,i)=>{let ok=answers[i]===q[2];return `<div class="panel" style="margin:10px 0"><b>${i+1}. ${q[0]}</b><p class="${ok?"":"muted"}" style="margin:9px 0">Your answer: ${answers[i]===null?"Not answered":q[1][answers[i]]} ${ok?"✓":"✗"}</p><p style="color:#16845f;margin:6px 0"><b>Correct answer: ${q[1][q[2]]}</b></p><div class="answer">${q[3]}</div></div>`}).join("");updateBest();show("result");}
+function goHome(){clearInterval(interval);show("home");updateBest();}
+function retry(){start(subject);}
+init();
+</script></body></html>
