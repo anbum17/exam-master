@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#2457d6">
+<meta name="description" content="Practice government exam questions in General Knowledge, Mathematics, Reasoning and English.">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <title>Exam Master — Government Exam Prep</title>
 <style>
 :root{--blue:#2457d6;--navy:#142447;--bg:#f4f7fc;--muted:#667085;--green:#15966b}
@@ -94,4 +99,11 @@ function submitQuiz(){if(finished)return;finished=true;clearInterval(interval);l
 function goHome(){clearInterval(interval);show("home");updateBest();}
 function retry(){start(subject);}
 init();
-</script></body></html>
+</script><script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(err => console.log("Offline setup:", err));
+  });
+}
+</script>
+</body></html>
