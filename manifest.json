@@ -1,10 +1,26 @@
 {
-  "id":"./","name":"Exam Master - Government Exam Prep","short_name":"Exam Master",
-  "description":"Practice government exam questions in four subjects.",
-  "start_url":"./","scope":"./","display":"standalone","orientation":"portrait",
-  "background_color":"#f4f7fc","theme_color":"#2457d6",
-  "icons":[
-    {"src":"icons/icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
-    {"src":"icons/icon-512.png","sizes":"512x512","type":"image/png","purpose":"any"}
+  "id": "./",
+  "name": "Exam Master - Government Exam Prep",
+  "short_name": "Exam Master",
+  "description": "Practice government exam questions in four subjects.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f7fc",
+  "theme_color": "#2457d6",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
   ]
 }
